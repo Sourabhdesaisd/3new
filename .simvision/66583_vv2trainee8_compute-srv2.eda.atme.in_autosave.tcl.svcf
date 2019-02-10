@@ -1,0 +1,179 @@
+
+#
+# Preferences
+#
+preferences set toolbar-Standard-WatchWindow {
+  usual
+  shown 0
+}
+preferences set plugin-enable-svdatabrowser-new 1
+preferences set toolbar-Windows-WatchWindow {
+  usual
+  shown 0
+}
+preferences set toolbar-Standard-Console {
+  usual
+  position -pos 1
+}
+preferences set toolbar-Search-Console {
+  usual
+  position -pos 2
+}
+preferences set toolbar-Standard-WaveWindow {
+  usual
+  position -pos 1
+}
+preferences set plugin-enable-groupscope 0
+preferences set plugin-enable-interleaveandcompare 0
+preferences set plugin-enable-waveformfrequencyplot 0
+preferences set toolbar-SimControl-WatchWindow {
+  usual
+  shown 0
+}
+preferences set savedlg-simulator ppe
+preferences set whats-new-dont-show-at-startup 1
+preferences set toolbar-TimeSearch-WatchWindow {
+  usual
+  shown 0
+}
+
+#
+# Databases
+#
+database require wave -search {
+	./wave.shm/wave.trn
+	/home/vv2trainee8/Desktop/Sourabh/3new/wave.shm/wave.trn
+}
+
+#
+# Markers
+#
+set time 120ns
+if {[catch {marker new -name  {B 2} -time $time}] != ""} {
+    marker set -using {B 2} -time $time
+}
+set time 80ns
+if {[catch {marker new -name  {B 1} -time $time}] != ""} {
+    marker set -using {B 1} -time $time
+}
+set time 170ns
+if {[catch {marker new -name  b3 -time $time}] != ""} {
+    marker set -using b3 -time $time
+}
+
+#
+# Mnemonic Maps
+#
+mmap new -reuse -name {Boolean as Logic} -radix %b -contents {{%c=FALSE -edgepriority 1 -shape low}
+{%c=TRUE -edgepriority 1 -shape high}}
+mmap new -reuse -name {Example Map} -radix %x -contents {{%b=11???? -bgcolor orange -label REG:%x -linecolor yellow -shape bus}
+{%x=1F -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=2C -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=* -label %x -linecolor gray -shape bus}}
+
+#
+# Waveform windows
+#
+if {[catch {window new WaveWindow -name "Waveform 1" -geometry 1366x665+-1+27}] != ""} {
+    window geometry "Waveform 1" 1366x665+-1+27
+}
+window target "Waveform 1" on
+waveform using {Waveform 1}
+waveform sidebar select designbrowser
+waveform set \
+    -primarycursor TimeA \
+    -signalnames name \
+    -signalwidth 175 \
+    -units ns \
+    -valuewidth 75
+waveform baseline set -time 0
+
+set id [waveform add -signals  {
+	wave::main_tb.clk
+	} ]
+set id [waveform add -signals  {
+	wave::main_tb.rst
+	} ]
+set id [waveform add -signals  {
+	{wave::main_tb.dut.u_if.u_pc_reg.pc[31:0]}
+	} ]
+waveform format $id -radix %x
+set id [waveform add -signals  {
+	wave::main_tb.dut.u_if.u_pc_reg.clk
+	} ]
+set id [waveform add -signals  {
+	{wave::main_tb.dut.u_if.u_imem.instruction[31:0]}
+	} ]
+set id [waveform add -signals  {
+	{wave::main_tb.dut.u_if_id.instr_id[31:0]}
+	} ]
+set id [waveform add -signals  {
+	wave::main_tb.dut.u_decode.branch
+	} ]
+set id [waveform add -signals  {
+	wave::main_tb.dut.u_if.u_btb.hit0
+	} ]
+set id [waveform add -signals  {
+	wave::main_tb.dut.u_if.u_btb.hit1
+	} ]
+set id [waveform add -signals  {
+	wave::main_tb.dut.u_if.u_btb.predict_taken
+	} ]
+set id [waveform add -signals  {
+	wave::main_tb.dut.u_if.btb_valid
+	} ]
+set id [waveform add -signals  {
+	wave::main_tb.dut.u_if.u_btb.actual_taken
+	} ]
+set id [waveform add -signals  {
+	{wave::main_tb.dut.u_if.u_btb.predict_target[31:0]}
+	} ]
+waveform format $id -radix %x
+set id [waveform add -signals  {
+	{wave::main_tb.dut.u_id_ex.instr_ex[31:0]}
+	} ]
+set id [waveform add -signals  {
+	wave::main_tb.dut.u_branch.branch_ex
+	} ]
+set id [waveform add -signals  {
+	wave::main_tb.dut.u_if.ex_branch_taken
+	} ]
+set id [waveform add -signals  {
+	wave::main_tb.dut.u_if.flush
+	} ]
+
+waveform xview limits 103ns 167ns
+
+#
+# Waveform Window Links
+#
+
+#
+# Source Browser windows
+#
+if {[catch {window new SrcBrowser -name "Source Browser 2" -geometry 700x525+28+58}] != ""} {
+    window geometry "Source Browser 2" 700x525+28+58
+}
+window target "Source Browser 2" on
+srcbrowser using {Source Browser 2}
+srcbrowser set \
+    -primarycursor TimeA \
+    -units ns \
+    -radix default \
+    -showstrength 0 \
+    -showcallstack 0 \
+    -displayvalues 0
+
+srcbrowser show -scope main_tb.dut.u_if.u_btb -file /home/vv2trainee8/Desktop/Sourabh/3new/fetch.v -line 505
+
+srcbrowser sidebar visibility partial
+
+#
+# Console windows
+#
+console set -windowname Console
+window geometry Console 600x250+0+0
+
+#
+# Layout selection
+#
